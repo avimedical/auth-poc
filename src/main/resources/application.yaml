@@ -1,0 +1,3 @@
+auth:
+  firebase:
+    service-key: something
