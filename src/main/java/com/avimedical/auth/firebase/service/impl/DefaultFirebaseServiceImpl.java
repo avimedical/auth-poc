@@ -7,8 +7,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
-import org.apache.commons.lang3.RandomUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -22,9 +20,15 @@ import java.util.logging.Logger;
 public class DefaultFirebaseServiceImpl implements FirebaseService {
 
     private static final Logger LOGGER = Logger.getLogger("ListenerBean");
+
     private static final String EMAIL = "test@avimedical.com";
+
     private static final String PHONE = "+4915217002904";
-    private static final String CLAIM = "premiumAccount";
+
+    private static final String CLAIM = "admin";
+
+    private static final String USER_ID = "tYvM9AWdpbWvH9lcUC9REXxiHVQ2";
+
     private FirebaseAuth defaultAuth;
 
     @Inject
@@ -47,20 +51,31 @@ public class DefaultFirebaseServiceImpl implements FirebaseService {
     @Override
     public void setClaims() throws FirebaseAuthException {
 
-        UserRecord.CreateRequest myUserRequest = new UserRecord.CreateRequest().setUid("myId" + RandomUtils.nextLong(100, 1000))
-                .setEmail(EMAIL)
-                .setPhoneNumber(PHONE);
-        var myUser = defaultAuth.createUser(myUserRequest);
+        defaultAuth.setCustomUserClaims(USER_ID, getClaims()); //myUser.getUid()
 
-        Map<String, Object> additionalClaims = new HashMap<String, Object>();
-        additionalClaims.put(CLAIM, true);
-        defaultAuth.setCustomUserClaims(myUser.getUid(), additionalClaims);
+        //deleteUser();
+    }
 
-        var authUser = defaultAuth.getUser(myUser.getUid());
+    private void deleteUser() throws FirebaseAuthException {
+
+        var user = defaultAuth.getUserByEmail(EMAIL);
+
+        defaultAuth.deleteUser(user.getUid());
+
+        LOGGER.info("Deleted user with id : [" + user.getUid() + "]");
+
+    }
+
+    public void getUser() throws FirebaseAuthException {
+        var authUser = defaultAuth.getUser(USER_ID);
         LOGGER.info("User: [" + authUser.getUid() + ", " + authUser.getEmail() + ", " + authUser.getPhoneNumber() + "]");
         LOGGER.info("My User custom claims: [" + authUser.getCustomClaims() + "]");
+    }
 
-        String customToken = defaultAuth.createCustomToken(authUser.getUid(), additionalClaims);
+
+    public void createCustomToken() throws FirebaseAuthException {
+
+        String customToken = defaultAuth.createCustomToken(USER_ID, getClaims());
         LOGGER.info("Custom Token: [" + customToken + "]");
 
 
@@ -72,17 +87,11 @@ public class DefaultFirebaseServiceImpl implements FirebaseService {
 
         LOGGER.info("Token Header: [" + header + "]");
         LOGGER.info("Token Payload: [" + payload + "]");
-
-        deleteUser();
     }
 
-    private void deleteUser() throws FirebaseAuthException {
-
-        var user = defaultAuth.getUserByEmail(EMAIL);
-
-        defaultAuth.deleteUser(user.getUid());
-
-        LOGGER.info("Deleted user with id : [" + user.getUid() + "]");
-
+    private Map<String, Object> getClaims(){
+        Map<String, Object> additionalClaims = new HashMap<String, Object>();
+        additionalClaims.put(CLAIM, true);
+        return additionalClaims;
     }
 }

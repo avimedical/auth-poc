@@ -9,4 +9,8 @@ public interface FirebaseService {
     void initialize() throws IOException;
 
     void setClaims() throws IOException, FirebaseAuthException;
+
+    void getUser() throws FirebaseAuthException;
+
+    void createCustomToken() throws FirebaseAuthException;
 }
