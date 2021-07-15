@@ -17,11 +17,11 @@ public class DefaultAppService {
 
         firebaseService.initialize();
 
-        //firebaseService.setClaims();
-
-        firebaseService.createCustomToken();
+        firebaseService.setClaims();
 
         firebaseService.getUser();
+
+        //firebaseService.createCustomToken();
     }
 
 }

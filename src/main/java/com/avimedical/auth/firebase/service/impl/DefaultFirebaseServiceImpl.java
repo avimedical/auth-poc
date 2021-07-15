@@ -13,19 +13,20 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 @ApplicationScoped
 public class DefaultFirebaseServiceImpl implements FirebaseService {
 
-    private static final Logger LOGGER = Logger.getLogger("ListenerBean");
+    private static final Logger LOGGER = Logger.getLogger("DefaultFirebaseServiceImpl");
 
     private static final String EMAIL = "test@avimedical.com";
 
     private static final String PHONE = "+4915217002904";
 
-    private static final String CLAIM = "admin";
+    private static final String CLAIM = "groups";
 
     private static final String USER_ID = "tYvM9AWdpbWvH9lcUC9REXxiHVQ2";
 
@@ -52,6 +53,8 @@ public class DefaultFirebaseServiceImpl implements FirebaseService {
     public void setClaims() throws FirebaseAuthException {
 
         defaultAuth.setCustomUserClaims(USER_ID, getClaims()); //myUser.getUid()
+
+        LOGGER.info("Custom claims set");
 
         //deleteUser();
     }
@@ -91,7 +94,7 @@ public class DefaultFirebaseServiceImpl implements FirebaseService {
 
     private Map<String, Object> getClaims(){
         Map<String, Object> additionalClaims = new HashMap<String, Object>();
-        additionalClaims.put(CLAIM, true);
+        additionalClaims.put(CLAIM, List.of("admin"));
         return additionalClaims;
     }
 }
