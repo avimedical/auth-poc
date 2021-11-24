@@ -2,6 +2,7 @@ package com.avimedical.auth.firebase.service.impl;
 
 import com.avimedical.auth.config.ApplicationProperties;
 import com.avimedical.auth.firebase.service.FirebaseService;
+import com.google.api.client.util.Value;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -28,7 +29,8 @@ public class DefaultFirebaseServiceImpl implements FirebaseService {
 
     private static final String CLAIM = "groups";
 
-    private static final String USER_ID = "tYvM9AWdpbWvH9lcUC9REXxiHVQ2";
+    private static final String USER_ID = "tYvM9AWdpbWvH9lcUC9REXxiHVQ2"; //me
+    private static final String USER_ID = "9xTj6qRAPUgPsYPAq3bS8NpgRn92"; //riccardo
 
     private FirebaseAuth defaultAuth;
 
@@ -94,7 +96,9 @@ public class DefaultFirebaseServiceImpl implements FirebaseService {
 
     private Map<String, Object> getClaims(){
         Map<String, Object> additionalClaims = new HashMap<String, Object>();
-        additionalClaims.put(CLAIM, List.of("admin"));
+        additionalClaims.put(CLAIM, List.of(ROLES.STAFF));
         return additionalClaims;
     }
+
+    enum ROLES {@Value ADMIN, @Value STAFF;}
 }
